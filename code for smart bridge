@@ -1,0 +1,95 @@
+#include <Wire.h>  
+#include <LCD_I2C.h> 
+LCD_I2C lcd(0x27); 
+#include <Servo.h> 
+Servo myservo; 
+Servo myservo1; 
+Servo myservo2; 
+#define mois1 A0 
+#define ir A3 
+int pos,mois,pos1,pos2,act=0; 
+#define buzzer 9 
+void setup() { 
+// put your setup code here, to run once: 
+Serial.begin(9600); 
+pinMode(mois1,INPUT); 
+pinMode(ir,INPUT); 
+pinMode(buzzer,OUTPUT); 
+digitalWrite(buzzer,LOW); 
+lcd.begin();  
+lcd.backlight();   
+myservo.attach(5);
+myservo.write(90);   
+myservo1.attach(3);   
+myservo1.write(90); 
+myservo2.attach(6);   
+myservo2.write(180); 
+lcd.setCursor(0, 0); 
+lcd.print("SMART BRIDGE"); // You can make spaces using well... spaces 
+delay(3000); 
+lcd.clear(); 
+} 
+void loop()  
+{ 
+mois=analogRead(mois1); 
+mois=map(mois,0,1023,100,0); 
+Serial.print("MOIS : "); 
+Serial.println(mois); 
+Serial.print("IR : "); 
+Serial.println(digitalRead(ir)); 
+if(mois<5) 
+{ 
+} 
+mois=0; 
+lcd.setCursor(0,0);
+lcd.print("MOIS :"); 
+if(mois<=9){lcd.print("00"); lcd.print(mois);} 
+else if(mois<=99){lcd.print("0"); lcd.print(mois); delay(400);} 
+else if(mois<=999){lcd.print(""); lcd.print(mois);} 
+delay(400); 
+if(mois>30&&mois<=100 && digitalRead(ir)==HIGH && act==0) 
+{ 
+digitalWrite(buzzer,HIGH); 
+Serial.print("servo motor : "); 
+for (pos2 = 90; pos2 >= 5; pos2 -= 1) { // goes from 180 degrees to 0 degrees 
+myservo2.write(pos1);
+ delay(15);                    
+} 
+Serial.print("servo motor : "); 
+              //
+ tell servo to go to position in variable 'pos' 
+   // waits 15 ms for the servo to reach the position 
+for (pos = 90; pos >= 0; pos -= 1) { // goes from 180 degrees to 0 degrees 
+myservo.write(pos);    
+delay(15);                    
+} 
+          //
+ tell servo to go to position in variable 'pos' 
+   // waits 15 ms for the servo to reach the position 
+Serial.print("servo motor : "); 
+for (pos1 = 90; pos1 >= 0; pos1 -= 1) { // goes from 180 degrees to 0 degrees 
+myservo1.write(pos1);
+ delay(15);                    
+} 
+              //
+ tell servo to go to position in variable 'pos' 
+   // waits 15 ms for the servo to reach the position
+lcd.setCursor(0, 0); 
+lcd.print("WATER LEVEL  "); 
+lcd.setCursor(0, 1); 
+lcd.print("HIGH
+ act=1; 
+delay(3000); 
+lcd.clear(); 
+} 
+if(mois<29) 
+{ 
+      "); 
+digitalWrite(buzzer,LOW); 
+act=0; 
+myservo.write(90);   
+myservo1.write(90);  
+myservo2.write(180);  
+} 
+delay(600); 
+} 
